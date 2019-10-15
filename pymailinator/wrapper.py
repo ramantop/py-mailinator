@@ -36,7 +36,7 @@ class RateLimiterReached(Exception):
 class Message(object):
     """Message Object for Mailinator Email API
     """
-    _baseURL = 'http://api.mailinator.com/api/email'
+    _baseURL = 'http://api.mailinator.com/api/message'
 
     def __init__(self, token, data):
         self.token = token
@@ -60,8 +60,10 @@ class Message(object):
         self.headers = {}
         self.body = ""
 
-    def get_message(self):
-        query_string = {'token': self.token, 'msgid': self.id}
+    def get_message(self, private_domain=False):
+        query_string = {'token': self.token, 'id': self.id}
+        if private_domain:
+            query_string.update({'private_domain': json.dumps(private_domain)})
         url = self._baseURL + "?" + urlencode(query_string)
         request = get_request(url)
         if request.getcode() == 404:
